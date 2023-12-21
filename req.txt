@@ -1,0 +1,6 @@
+pygame
+requests
+time
+chess
+sqlite
+flask

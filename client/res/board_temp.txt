@@ -1,8 +1,8 @@
-wR-wN-wB-wK-wQ-wB-wN-wR
+bR-bN-bB-bQ-bK-bB-bN-bR
+bP-bP-bP-bP-bP-.-.-bP
+.-.-.-.-.-.-.-.
+.-.-.-.-.-wP-bP-.
+.-.-.-.-.-.-.-.
+.-.-.-.-.-.-.-.
 wP-wP-wP-wP-.-wP-wP-wP
-.-.-.-.-.-.-.-.
-.-.-.-.-wP-.-.-.
-.-.-.-.-.-bP-.-.
-.-.-.-.-.-.-.-.
-bP-bP-bP-bP-bP-.-bP-bP
-bR-bN-bB-bK-bQ-bB-bN-bR
+wR-wN-wB-wQ-wK-wB-wN-wR

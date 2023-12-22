@@ -1,9 +1,10 @@
 import pygame
 import requests
+import client.parameters as para
 
 pygame.mixer.init()
-SERVER_ADRESS = ''
-SOUND_MOVE = pygame.mixer.Sound('E:/Code/python_code/chess/PygameOnlineChess/Client/res/music/move.wav')
+SOUND_MOVE = pygame.mixer.Sound('res/music/move.wav')
+
 
 class ScrollBox:
     def __init__(self, x, y, width, height, len_val, font_size):
@@ -31,13 +32,11 @@ class ScrollBox:
     def render_text(self):
         rendered_text = []
         if len(self.text) > self.len:
-            self.current_text = self.text[self.position:self.len +
-                                          self.position - 1]
+            self.current_text = self.text[self.position:self.len + self.position - 1]
         else:
             self.current_text = self.text
         for i in range(len(self.current_text)):
-            string_rendered = self.font.render(self.current_text[i], 1,
-                                               pygame.Color('black'))
+            string_rendered = self.font.render(self.current_text[i], 1, pygame.Color('black'))
             rend_rect = string_rendered.get_rect()
             rend_rect.top = self.y + 10 + i * 30
             rend_rect.left = self.x + 5
@@ -65,9 +64,7 @@ class ScrollBox:
 
 
 class Board:
-    def __init__(self, width, height, color, adress):
-        global SERVER_ADRESS
-        SERVER_ADRESS = adress
+    def __init__(self, width, height, color):
         self.width = width
         self.height = height
         is_white = False
@@ -118,7 +115,7 @@ class Board:
     def get_current_turn(self):
         current_turn = ''
         try:
-            current_turn = requests.get(SERVER_ADRESS +
+            current_turn = requests.get(para.SERVER_ADDRESS +
                                         'get_current_color/{}'.format(
                                             self.key)).text
         except Exception as e:
@@ -130,7 +127,7 @@ class Board:
         try:
             turns = ''
             try:
-                turns = requests.get(SERVER_ADRESS + 'get_turns/{}'.format(
+                turns = requests.get(para.SERVER_ADDRESS + 'get_turns/{}'.format(
                     self.key)).text
             except Exception:
                 pass
@@ -175,19 +172,16 @@ class Board:
         self.board[x][y][1] = figure
 
     def update_board(self):
-        try:
-            new_board = requests.get(SERVER_ADRESS +
-                                     'get_board/{}***{}'.format(
-                                         self.opponent, self.key)).text
-            if len(new_board) and new_board != 'error':
-                with open('res/board_temp.txt', 'w') as data:
-                    data.write(new_board)
-        except Exception:
-            pass
+        new_board = requests.get(para.SERVER_ADDRESS +
+                                 'get_board/{}***{}'.format(
+                                     self.opponent, self.key)).text
+        if len(new_board) and new_board != 'error':
+            with open('res/board_temp.txt', 'w') as data:
+                data.write(new_board)
 
     def can_move(self, cell_start, cell_end):
         try:
-            can = requests.get(SERVER_ADRESS +
+            can = requests.get(para.SERVER_ADDRESS +
                                'check_move/{}:{}:{}:{}:{}***{}'.format(
                                    str(cell_start[1]), str(cell_start[0]),
                                    str(cell_end[1]), str(cell_end[0]),
@@ -237,8 +231,8 @@ class Board:
                     self.selected = cell
                     self.board[cell[1]][cell[0]][2] = True
             else:
-                if self.selected is not None and\
-                   self.can_move(self.selected, cell):
+                if self.selected is not None and \
+                        self.can_move(self.selected, cell):
                     self.board[self.selected[1]][self.selected[0]][2] = False
                     self.move_figure(self.selected, cell)
                     self.selected = None
@@ -278,15 +272,15 @@ class Board:
                                       i * self.cell_size + self.top + 1,
                                       self.cell_size - 1,
                                       self.cell_size - 1))
-                if i == self.light_cells[0][1] and\
-                   j == self.light_cells[0][0] and self.need_light:
+                if i == self.light_cells[0][1] and \
+                        j == self.light_cells[0][0] and self.need_light:
                     pygame.draw.rect(screen, (187, 203, 69),
                                      (j * self.cell_size + self.left + 1,
                                       i * self.cell_size + self.top + 1,
                                       self.cell_size - 1,
                                       self.cell_size - 1))
-                if i == self.light_cells[1][1] and\
-                   j == self.light_cells[1][0] and self.need_light:
+                if i == self.light_cells[1][1] and \
+                        j == self.light_cells[1][0] and self.need_light:
                     pygame.draw.rect(screen, (187, 203, 69),
                                      (j * self.cell_size + self.left + 1,
                                       i * self.cell_size + self.top + 1,
@@ -322,12 +316,12 @@ class Board:
         font = pygame.font.Font(None, 55)
         self.turn_text = ''
         if self.player == self.current_turn:
-            self.turn_text = 'Ваш ход'
+            self.turn_text = 'Step tracking'
         else:
             if self.current_turn == 'w':
-                self.turn_text = 'Ход белых'
+                self.turn_text = 'White turn'
             elif self.current_turn == 'b':
-                self.turn_text = 'Ход черных'
+                self.turn_text = 'Black turn'
         for i in range(2):
             string_rendered = font.render(self.turn_text.split()[i],
                                           1, pygame.Color('black'))

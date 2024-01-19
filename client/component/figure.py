@@ -26,6 +26,7 @@ class Figure(pg.sprite.Sprite):
         super().__init__(group)
         self.x = pos_x
         self.y = pos_y
+        print(figure_type)
         self.image = figure_images[figure_type]
         self.rect = self.image.get_rect()
         self.rect = self.rect.move(para.FIGURE_WIDTH * pos_x + 20 * pos_x + 10,

@@ -13,12 +13,12 @@ def game_end_screen(pygame, screen, mode, clock):
     partion_end_text = 'RESULT!'
     exit_menu_button = Button(375, 700, 5, 5, 250, 43, 'Exit', 49)
     if mode == 3:
-        game_end_text = 'DRAW!'
+        para.game_end_text = 'DRAW!'
     elif mode == 1:
-        game_end_text = 'WIN!'
+        para.game_end_text = 'WIN!'
         star = True
     elif mode == 2:
-        game_end_text = 'LOSE!'
+        para.game_end_text = 'LOSE!'
 
     while True:
         for event in pygame.event.get():
@@ -35,7 +35,7 @@ def game_end_screen(pygame, screen, mode, clock):
         screen.fill((0, 0, 0))
         screen.blit(fon, (0, 0))
         screen.blit(*get_text_rendered(pygame, partion_end_text, (30, 30), 49, True))
-        screen.blit(*get_text_rendered(pygame, game_end_text, (270, 100), 49, True))
+        screen.blit(*get_text_rendered(pygame, para.game_end_text, (270, 100), 49, True))
         exit_menu_button.render(screen)
         para.sprites_star.update()
         para.sprites_star.draw(screen)

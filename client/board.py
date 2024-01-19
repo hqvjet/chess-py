@@ -1,3 +1,5 @@
+import io
+
 import pygame
 import requests
 import client.parameters as para
@@ -80,16 +82,17 @@ class Board:
                 else:
                     self.board[i][j][0] = 'black'
                 is_white = not is_white
-        if color == 1:
-            self.player = 'w'
-            self.opponent = 'b'
-            self.numbers = ['8', '7', '6', '5', '4', '3', '2', '1']
-            self.letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
-        elif color == 2:
+
+        if color == 2:
             self.numbers = ['1', '2', '3', '4', '5', '6', '7', '8']
             self.letters = ['h', 'g', 'f', 'e', 'd', 'c', 'b', 'a']
             self.player = 'b'
             self.opponent = 'w'
+        elif color == 1:
+            self.player = 'w'
+            self.opponent = 'b'
+            self.numbers = ['8', '7', '6', '5', '4', '3', '2', '1']
+            self.letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 
         self.current_turn = 'w'
         self.left = 10
@@ -330,3 +333,38 @@ class Board:
             turn_text_rect.left = (190 - turn_text_rect.width) // 2 + 811
             screen.blit(string_rendered, turn_text_rect)
         self.scroll_box.render(screen)
+
+
+def normalize_board(board):
+    new_board = []
+    print(board)
+    for i in board.split('\n'):
+        fing = [j.lower() for j in i.split('-')]
+        new_board.append(fing)
+    return new_board[:-1]
+
+
+def convert_to_fen(board):
+    board = normalize_board(board)
+    print(board)
+    with io.StringIO() as s:
+        for row in board:
+            empty = 0
+            for cell in row:
+                print(cell[0])
+                c = cell[0]
+                if c in ('w', 'b'):
+                    if empty > 0:
+                        s.write(str(empty))
+                        empty = 0
+                    s.write(cell[1].upper() if c == 'w' else cell[1].lower())
+                else:
+                    empty += 1
+            if empty > 0:
+                s.write(str(empty))
+            s.write('/')
+        # Move one position back to overwrite last '/'
+        s.seek(s.tell() - 1)
+        # If you do not have the additional information choose what to put
+        s.write(' w KQkq - 0 1')
+        return s.getvalue()

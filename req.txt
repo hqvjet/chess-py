@@ -1,6 +1,6 @@
 pygame
 requests
-time
 chess
 sqlite
+mysql-connector-python
 flask

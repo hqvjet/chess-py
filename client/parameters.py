@@ -11,3 +11,5 @@ FIGURE_WIDTH = FIGURE_HEIGHT = 80
 SERVER_ADDRESS = 'http://127.0.0.1:1654/'
 screen_rect = (0, 0, WIDTH, HEIGHT)
 GAMEMODE = None
+BACK_TO = 'start_screen'
+game_end_text = None

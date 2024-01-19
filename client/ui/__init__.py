@@ -34,8 +34,10 @@ def start_screen(pygame, screen, clock):
                     exit_game = exit_button.check_coords(pos)
                     if offline:
                         para.GAMEMODE = 0
+                        return
                     if online:
                         para.GAMEMODE = 1
+                        return
                     if exit_game:
                         terminate(pygame, para.player_key)
         pygame.display.flip()

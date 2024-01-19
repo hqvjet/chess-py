@@ -13,11 +13,11 @@ def login_screen(pygame, screen, clock):
     register_login_error = 'Oops! There is a register error occurs, try again'
     login_data_error = 'Oops! Wrong Password, try again'
     server_connect_error = 'Oops! There is a connect error occurs, try again'
-    login_button = Button(400, 600, 35, 7, 200, 50, 'Login Now!', 35)
-    register_button = Button(375, 670, 23, 15, 250, 50,
-                             'Register Now!', 45)
-    login_input = TextInput(400, 450, 200, 30, 40, 13)
-    pass_input = TextInput(400, 550, 200, 30, 40, 13, True)
+    login_button = Button(400, 500, 35, 15, 200, 50, 'Login Now!', 35)
+    register_button = Button(400, 570, 23, 15, 200, 50, 'Register Now!', 35)
+    back_button = Button(400, 640, 75, 15, 200, 50, 'Back', 35)
+    login_input = TextInput(400, 300, 200, 30, 40, 13)
+    pass_input = TextInput(400, 400, 200, 30, 40, 13, True)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -28,6 +28,7 @@ def login_screen(pygame, screen, clock):
                 if key == 1:
                     login = login_button.check_coords(pos)
                     reg = register_button.check_coords(pos)
+                    back = back_button.check_coords(pos)
                     login_input.check_coords(pos)
                     pass_input.check_coords(pos)
                     if reg:
@@ -59,6 +60,11 @@ def login_screen(pygame, screen, clock):
                                 login_input.clear()
                                 pass_input.clear()
 
+                    elif back:
+                        para.BACK_TO = 'start_screen'
+                        para.GAMEMODE = None
+                        return
+
             elif event.type == pygame.KEYDOWN:
                 login_input.update(event)
                 pass_input.update(event)
@@ -67,12 +73,13 @@ def login_screen(pygame, screen, clock):
         fon = pygame.transform.scale(load_image(pygame, 'fon.jpg'), (para.WIDTH, para.HEIGHT))
         screen.blit(fon, (0, 0))
         screen.blit(*get_text_rendered(pygame, main_text, (0, 30), 49, True))
-        screen.blit(*get_text_rendered(pygame, login_indicator_text, (0, 400),
+        screen.blit(*get_text_rendered(pygame, login_indicator_text, (0, 250),
                                        49, True))
-        screen.blit(*get_text_rendered(pygame, pass_indicator_text, (0, 500),
+        screen.blit(*get_text_rendered(pygame, pass_indicator_text, (0, 350),
                                        49, True))
         login_button.render(screen)
         register_button.render(screen)
+        back_button.render(screen)
         login_input.render(screen)
         pass_input.render(screen)
         if error_type == 1:

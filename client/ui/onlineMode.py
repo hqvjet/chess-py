@@ -8,8 +8,8 @@ def menu_screen(pygame, screen, clock):
     get_rating(para.player_key)
     rating_indicator_text = 'Point: '
     rating_text = get_rating(para.player_key)
-    start_game_button = Button(395, 300, 5, 5, 210, 43, 'Start!', 49)
-    exit_prog_button = Button(370, 400, 5, 5, 260, 43, 'Exit!', 49)
+    start_game_button = Button(370, 300, 65, 5, 210, 43, 'Start!', 49)
+    exit_prog_button = Button(370, 400, 65, 5, 210, 43, 'Exit!', 49)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

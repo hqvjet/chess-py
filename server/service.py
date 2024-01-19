@@ -3,44 +3,43 @@ from random import randint
 from turnlogger import TurnLogger
 from controller import change_rating
 import time
+import server.parameters as para
 
 
-def game_end(key, turn_players, boards, last_online, player_won_exgmop):
+def game_end(key):
     try:
-        del turn_players[turn_players.index(key)]
+        del para.turn_players[para.turn_players.index(key)]
     except Exception:
         pass
     try:
-        del boards[key]
+        del para.boards[key]
     except Exception:
         pass
     try:
-        del last_online[key]
+        del para.last_online[key]
     except Exception:
         pass
     try:
-        del player_won_exgmop[player_won_exgmop.index(key)]
+        del para.player_won_exgmop[para.player_won_exgmop.index(key)]
     except Exception:
         pass
 
 
 def create_board(key):
     try:
-        global turn_players
-        global boards
-        my_index = turn_players.index(key)
-        if len(turn_players) > 1:
-            del turn_players[my_index]
+        my_index = para.turn_players.index(key)
+        if len(para.turn_players) > 1:
+            del para.turn_players[my_index]
             temp_board = Board()
             color_temp = randint(0, 1)
             logger_temp = TurnLogger()
-            opponent_key = turn_players.pop(0)
-            boards[key] = (temp_board, str(color_temp + 1), logger_temp,
-                           opponent_key)
-            boards[opponent_key] = (temp_board, str((not color_temp) + 1),
-                                    logger_temp, key)
+            opponent_key = para.turn_players.pop(0)
+            para.boards[key] = (temp_board, str(color_temp + 1), logger_temp,
+                                opponent_key)
+            para.boards[opponent_key] = (temp_board, str((not color_temp) + 1),
+                                         logger_temp, key)
             try:
-                del turn_players[turn_players.index(opponent_key)]
+                del para.turn_players[para.turn_players.index(opponent_key)]
             except Exception:
                 pass
 
@@ -52,53 +51,54 @@ def create_board(key):
 
 def get_color(key):
     try:
-        return boards[key][1]
+        print(para.boards[key][1])
+        return para.boards[key][1]
     except Exception:
         return 'error'
 
 
-def close_session(key, player_won_exgmop, last_online):
+def close_session(key):
     try:
-        opponent_key = boards[key][3]
-        player_won_exgmop.append(opponent_key)
+        opponent_key = para.boards[key][3]
+        para.player_won_exgmop.append(opponent_key)
     except Exception:
         pass
     try:
-        del turn_players[turn_players.index(key)]
+        del para.turn_players[para.turn_players.index(key)]
     except Exception:
         pass
     try:
-        del boards[key]
+        del para.boards[key]
     except Exception:
         pass
     try:
-        del last_online[key]
+        del para.last_online[key]
     except Exception:
         pass
     try:
-        del player_won_exgmop[player_won_exgmop.index(key)]
+        del para.player_won_exgmop[para.player_won_exgmop.index(key)]
     except Exception:
         pass
 
     return ''
 
 
-def check_board_is(key, boards, ):
-    if key in boards:
+def check_board_is(key):
+    if key in para.boards:
         try:
-            del turn_players[turn_players.index(key)]
+            del para.turn_players[para.turn_players.index(key)]
         except Exception:
             pass
         return 'OK'
-    if key not in turn_players:
-        turn_players.append(key)
+    if key not in para.turn_players:
+        para.turn_players.append(key)
     return 'waiting'
 
 
 def can_move(paramsAndKey):
     try:
         params, key = paramsAndKey.split('***')
-        board = boards[key][0]
+        para.board = para.boards[key][0]
         params = params.split(':')
         x1, y1, x2, y2 = map(int, params[:4])
         act = [7 - x1, 7 - y1, 7 - x2, 7 - y2]
@@ -109,9 +109,9 @@ def can_move(paramsAndKey):
         else:
             x1, y1, x2, y2 = x1, 7 - y1, x2, 7 - y2
             act_player = 'b'
-        result = board.move_piece(x1, y1, x2, y2)
+        result = para.board.move_piece(x1, y1, x2, y2)
         if result[0]:
-            boards[key][2].register_turn(player, result[1])
+            para.boards[key][2].register_turn(player, result[1])
         return '1' if result[0] else '0'
     except Exception:
         return 'error'
@@ -120,17 +120,17 @@ def can_move(paramsAndKey):
 def load_board(colorAndKey):
     try:
         color, key = colorAndKey.split('***')
-        board = boards[key][0]
+        para.board = para.boards[key][0]
         board_full = [['' for _ in range(8)] for __ in range(8)]
         if color == 'w':
             for i in range(8):
                 for j in range(8):
-                    board_full[i][j] = board.cell(i, 7 - j).replace('  ', '.')
+                    board_full[i][j] = para.board.cell(i, 7 - j).replace('  ', '.')
                 board_full[i] = '-'.join(board_full[i])
         elif color == 'b':
             for i in range(8):
                 for j in range(8):
-                    board_full[i][j] = board.cell(7 - i, j).replace('  ', '.')
+                    board_full[i][j] = para.board.cell(7 - i, j).replace('  ', '.')
                 board_full[i] = '-'.join(board_full[i])
         board_full = '\n'.join(board_full)
         return board_full
@@ -138,14 +138,15 @@ def load_board(colorAndKey):
         return 'error'
 
 
-def check_result(key, player_won_exgmop):
+def check_result(key):
     try:
-        if key in player_won_exgmop:
+        if key in para.player_won_exgmop:
             change_rating(key, 10)
             game_end(key)
             return 'WIN'
-        board = boards[key][0]
-        result = board.result()
+        para.board = para.boards[key][0]
+        result = para.board.result()
+        print(result)
         if result == '*':
             return 'False'
         if result == '1/2-1/2':
@@ -153,7 +154,7 @@ def check_result(key, player_won_exgmop):
             return 'None'
 
         if result == '1-0':
-            if boards[key][1] == '1':
+            if para.boards[key][1] == '1':
                 change_rating(key, 10)
                 game_end(key)
                 return 'WIN'
@@ -162,7 +163,7 @@ def check_result(key, player_won_exgmop):
                 game_end(key)
                 return 'LOSS'
         if result == '0-1':
-            if boards[key][1] == '2':
+            if para.boards[key][1] == '2':
                 change_rating(key, 10)
                 game_end(key)
                 return 'WIN'
@@ -177,7 +178,7 @@ def check_result(key, player_won_exgmop):
 
 def get_current_color(key):
     try:
-        color = boards[key][0].turn
+        color = para.boards[key][0].turn
         if color:
             return 'w'
         return 'b'
@@ -185,38 +186,38 @@ def get_current_color(key):
         return 'error'
 
 
-def get_turns(key, last_online):
+def get_turns(key):
     try:
-        last_online[key] = time.time()
-        turns = boards[key][2].get_turns()
+        para.last_online[key] = time.time()
+        turns = para.boards[key][2].get_turns()
         return '*'.join(turns)
     except Exception:
         return 'error'
 
 
-def check_online_player(last_online, player_won_exgmop):
+def check_online_player():
     try:
-        for key, i in last_online.items():
+        for key, i in para.last_online.items():
             if time.time() - i > 10:
                 try:
-                    opponent_key = boards[key][3]
-                    player_won_exgmop.append(opponent_key)
+                    opponent_key = para.boards[key][3]
+                    para.player_won_exgmop.append(opponent_key)
                 except Exception:
                     pass
                 try:
-                    del turn_players[turn_players.index(key)]
+                    del para.turn_players[para.turn_players.index(key)]
                 except Exception:
                     pass
                 try:
-                    del boards[key]
+                    del para.boards[key]
                 except Exception:
                     pass
                 try:
-                    del last_online[key]
+                    del para.last_online[key]
                 except Exception:
                     pass
                 try:
-                    del player_won_exgmop[key]
+                    del para.player_won_exgmop[key]
                 except Exception:
                     pass
     except Exception:

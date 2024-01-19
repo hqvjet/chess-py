@@ -1,15 +1,8 @@
 from controller import *
 from service import *
 
-board = 0
-boards = {}
-last_online = {}
-player_won_exgmop = []
-turn_players = []
-
 
 def api(app):
-    print('hihi')
     @app.route('/get_rating/<key>')
     def api_get_rating(key):
         return get_rating(key)
@@ -20,7 +13,7 @@ def api(app):
 
     @app.route('/close_session/<key>')
     def api_close_session(key):
-        return close_session(key, player_won_exgmop, last_online)
+        return close_session(key)
 
     @app.route('/create_board/<key>')
     def api_create_board(key):
@@ -28,7 +21,7 @@ def api(app):
 
     @app.route('/check_board_is/<key>')
     def api_check_board_is(key):
-        return check_board_is(key, boards)
+        return check_board_is(key)
 
     @app.route('/register_user/<params>')
     def api_register_user(params):
@@ -48,7 +41,7 @@ def api(app):
 
     @app.route('/check_result/<key>')
     def api_check_result(key):
-        return check_result(key, player_won_exgmop)
+        return check_result(key)
 
     @app.route('/get_current_color/<key>')
     def api_get_current_color(key):
@@ -61,6 +54,3 @@ def api(app):
     @app.route('/tick')
     def api_check_online_player():
         return check_online_player()
-
-def hello():
-    pass
